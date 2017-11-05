@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Concentration Data</title>
+		
+		<script type="text/javascript" src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+		<script type="text/javascript" src="https://code.highcharts.com/highcharts.js"></script>
+		<script type="text/javascript" src="https://code.highcharts.com/modules/data.js"></script>
+		
+		<script type="text/javascript">
+			$(document).ready(function() {
+				
+				$.get('concentrations.csv', function(csv) {
+				    $('#container').highcharts({
+				        chart: {
+				        	type: 'line'
+				        },
+				        legend: {
+				        	enabled:false
+				        },
+				        data: {
+				            csv: csv
+				        },
+				        title: {
+							text: 'Concentrations'
+						},
+						yAxis: {
+							title: {
+								text: 'Number of Concentrators'
+							}
+						},
+						xAxis: {
+							title: {
+								text: 'Year'
+							}
+						}
+				    }, function(chart){
+				        var $dropdown = $('#dropdown').append('<select><option>Select concentration</option></select>').find('select'), $option, conc;
+
+				        $(chart.series).each(function(i, conc){
+				        	$dropdown.append('<option>' + conc.name + '</option>');
+				        	conc.options.id = conc.options.name;
+				        });
+									        
+				        $dropdown.change(function(){
+
+				        	$(chart.series).each(function(){
+							    this.setVisible(false, false);
+							});
+
+				            $option = $(this).val();
+				            conc = chart.get($option); 
+				            conc.setVisible(true,true);
+				        });
+				    
+				    });
+				});
+				
+				
+			});
+		</script>	
+	</head>
+	<body>
+		<div id="container" style="width: 800px; height: 400px; margin: 0 auto"></div>
+		<div id="dropdown" style = "text-align:center;"></div>
+				
+	</body>
+</html>
